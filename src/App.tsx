@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import './App.css';
+import TodoList from './common/todos/index'
+import {useDispatch} from 'react-redux'
+import {add } from './features/todos/todoSlice'
 
+ 
 function App() {
+  const dispatch = useDispatch()
   const [formValue, setFormValue] = useState({
     input: '',
   });
@@ -40,13 +45,15 @@ function App() {
                 setFormValue((preValue) => ({ ...preValue, input: value }))
               }
             />
-            <button type="submit" className="to-do-list__submit">
+            <button type="submit" className="to-do-list__submit" onClick = {() => {
+              dispatch(add({txt:formValue.input, id: Date.now().toString()}));setFormValue((preValue) => ({ ...preValue, input: '' }))
+            }}>
               Add
             </button>
           </div>
         </form>
-
         {/* You should render your todo list down here */}
+        <TodoList/>
       </section>
     </div>
   );
