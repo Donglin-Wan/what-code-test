@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import './App.css';
 import TodoList from './common/todos/index'
-import {useDispatch} from 'react-redux'
-import {add } from './features/todos/todoSlice'
-
- 
+import {
+  useAddPostMutation,
+} from './service/postsApi';
 function App() {
-  const dispatch = useDispatch()
   const [formValue, setFormValue] = useState({
-    input: '',
+    title: '',
+    content: ''
   });
-
   const submitForm = (event: any) => {
     event.preventDefault();
   };
-
+  const [addPost] = useAddPostMutation();
+  const addHandler = async () => {
+    await addPost(formValue);
+  }
   return (
     <div className="app">
       <header className="app__header">
@@ -38,22 +39,29 @@ function App() {
             </label>
             <input
               type="text"
-              id="input"
+              id="title"
               className="to-do-list__input"
-              value={formValue.input}
+              value={formValue.title}
               onChange={({ target: { value } }) =>
-                setFormValue((preValue) => ({ ...preValue, input: value }))
+                setFormValue((preValue) => ({ ...preValue, title: value }))
               }
             />
-            <button type="submit" className="to-do-list__submit" onClick = {() => {
-              dispatch(add({txt:formValue.input, id: Date.now().toString()}));setFormValue((preValue) => ({ ...preValue, input: '' }))
-            }}>
+            <input
+              type="text"
+              id="content"
+              className="to-do-list__input"
+              value={formValue.content}
+              onChange={({ target: { value } }) =>
+                setFormValue((preValue) => ({ ...preValue, content: value }))
+              }
+            />
+            <button type="submit" className="to-do-list__submit" onClick={addHandler}>
               Add
             </button>
           </div>
         </form>
         {/* You should render your todo list down here */}
-        <TodoList/>
+        <TodoList />
       </section>
     </div>
   );
